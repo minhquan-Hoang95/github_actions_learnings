@@ -1,0 +1,6 @@
+{
+  "name": "tp-01",
+  "scripts": {
+    "test": "echo 'Tests réussis !' && exit 0"
+  }
+}

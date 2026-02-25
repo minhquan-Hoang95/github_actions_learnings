@@ -1,0 +1,45 @@
+# 1. Nom affiché dans l'interface GitHub
+name: CI
+
+# 2. Quand le workflow s'exécute
+# Ici, le workflow s'exécute à chaque push sur les branches main et develop, à chaque pull request vers main, et peut aussi être déclenché manuellement.
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Permet de déclencher manuellement le workflow depuis l'interface GitHub
+    
+# Permissions minimales (bonne pratique pour la sécurité)
+permissions:
+  contents: read # Permet de lire le contenu du dépôt (nécessaire pour checkout
+
+# 3. Les jobs (tâches) à exécuter
+jobs:
+  # Identifiant du job (pas d'espaces)
+  test:
+  # Machine virtuelle utilisée
+    name: Test unitaires
+    runs-on: ubuntu-latest
+
+    # 4. Les étapes du job
+    steps:
+      # Étape 1: Vérifier le code
+      - name: Checkout du code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      # Étape 2: Installer les dépendances
+      - name: Install Node.js 20
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '20'
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      # Étape 3: Exécuter les tests
+      - name: Lacer le test
+        run: npm test
