@@ -1,0 +1,25 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+        - 'backend/**' # Tout dans backend
+        - 'shared/**' # Code partagé
+        - '!backend/docs/**' # Sauf la documentation
+
+permissions:
+    contents: read
+
+jobs:
+    test-backend:
+        name: Test Backend
+        runs-on: ubuntu-24.04
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6.0.1
+
+            - name: Test le backend
+              run: echo "Tests backend lancés car fichiers backend modifiée"
+
