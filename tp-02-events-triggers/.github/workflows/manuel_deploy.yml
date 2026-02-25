@@ -1,0 +1,52 @@
+name : Manuel Deploy
+
+on:
+  workflow_dispatch: # Permet de déclencher manuellement le workflow depuis l'interface GitHub
+    inputs: # Définition des inputs pour le déclenchement manuel
+        environment: # Environnement de déploiement
+            description: 'Environnement de déploiement' # Description de l'input
+            required: true # L'input est obligatoire
+            type: choice # Type de l'input, ici une liste de choix
+            options: # Options disponibles pour l'input
+                - dev
+                - staging
+                - production
+
+        version: # Version à déployer
+            description: 'Version à déployer' 
+            required: true # L'input est obligatoire
+            type: string # Type de l'input, ici une chaîne de caractères
+
+        dry_run: # Option pour simuler le déploiement sans l'exécuter
+            description: 'Simuler le déploiement (dry run)' 
+            required: false # L'input n'est pas obligatoire
+            type: boolean # Type de l'input, ici un booléen
+            default: true # Valeur par défaut pour l'input dry_run
+
+permissions:
+    contents: read # Permission de lecture sur les contenus du dépôt
+
+jobs:
+    manuel-deploy:
+        name: Deploy to ${{ inputs.environment }} # Nom du job avec l'environnement de déploiement
+        runs-on: ubuntu-24.04 # Environnement d'exécution du job
+
+        steps:
+            - name: Checkout code # Étape pour récupérer le code du dépôt
+              uses: actions/checkout@v6.0.1 # Action GitHub pour le checkout du code
+              with:
+                ref: ${{ inputs.version }} # Utilisation de l'input version pour spécifier la référence à checkout
+
+            - name: Afficher les paramètres de déploiement # Étape pour afficher les paramètres de déploiement
+              run: |
+                echo "Déploiement sur l'environnement : ${{ inputs.environment }}" # Affichage de l'environnement de déploiement
+                echo "Version à déployer : ${{ inputs.version }}" # Affichage de la version à déployer
+                echo "Dry run : ${{ inputs.dry_run }}" # Affichage de l'option dry run
+
+            - name : Deploy # Étape de déploiement
+              if: inputs.dry_run == 'false' # Condition pour exécuter le déploiement uniquement si dry_run est false
+              run: echo "Déploiement réel vers l'environnement ${{ inputs.environment }} avec la version ${{ inputs.version }}" # Commande de déploiement (à remplacer par la commande réelle)
+            
+            - name: Simulate Deploy # Étape de simulation de déploiement
+              if: inputs.dry_run == 'true' # Condition pour exécuter la simulation uniquement si dry_run est true
+              run: echo "Mode simulation activé. "
