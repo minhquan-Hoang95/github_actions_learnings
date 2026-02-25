@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -21,5 +22,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
-      - run: npm ci
-      - run: npm test
+    #   - name: Security audit
+    #     run: npm audit --audit-level=high
+
+    #   - name: Lint
+    #     run: npx eslint .
+
+      - name: Test
+        run: npm ci && npm test
