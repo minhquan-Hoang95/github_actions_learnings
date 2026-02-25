@@ -1,0 +1,24 @@
+name: Daily Cleanup Workflow
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Exécute tous les jours à 3h00 du matin
+
+  workflow_dispatch:
+
+permissions:
+    # Pour supprimer des artefacts
+  contents: write # Allow the workflow to modify repository contents
+
+jobs:
+    cleanup:
+        runs-on: ubuntu-24.04
+        steps:
+            - name: Afficher l'heure
+              run: |
+                echo "Nettoyage lancé à : $(date)"
+                echo " Cron : ${{ github.event.schedule }}"
+            
+            - name: Supprimer les artefacts
+              run: |
+                echo "Suppression des artefacts... > 30 jours"
