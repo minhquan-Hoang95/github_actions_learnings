@@ -1,0 +1,39 @@
+name: Multi Event
+
+on:
+  # 1. Tests sur toutes les PRs
+  pull_request:
+    branches: [main]
+
+  # 2. Déploiement sur push vers main
+  push:
+    branches: [main]
+
+  # 3. Déploiement manuel possible
+  workflow_dispatch:
+    inputs:
+      deploy:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  mtest:
+    name: Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - run: npm test
+
+  mdeploy:
+    name: Déploiement
+    runs-on: ubuntu-24.04
+    # Ne déployer que si push sur main OU workflow_dispatch avec deploy=true
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy == true)
+    needs: mtest
+
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - run: echo "Déploiement en cours..."

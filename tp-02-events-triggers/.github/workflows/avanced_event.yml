@@ -1,0 +1,36 @@
+name: Événements multiples
+
+on:
+  # Déclenché quand une release est publiée
+  release:
+    types: [published]
+
+  # Déclenché quand on commente une issue
+  issue_comment:
+    types: [created]
+
+  # Déclenché quand un workflow externe se termine
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  handle-event:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Identifier l'événement
+        run: |
+          echo "Type d'événement: ${{ github.event_name }}"
+
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "Release détectée: ${{ github.event.release.tag_name }}"
+          elif [ "${{ github.event_name }}" == "issue_comment" ]; then
+            echo "Commentaire: ${{ github.event.comment.body }}"
+          elif [ "${{ github.event_name }}" == "workflow_run" ]; then
+            echo "Workflow terminé: ${{ github.event.workflow_run.conclusion }}"
+          fi
